@@ -1,0 +1,97 @@
+.motion-graphics {
+  width: 100%;
+  background: #e9e9e9;
+  padding: 64px 0 120px;
+  overflow: hidden;
+}
+
+.motion-graphics__intro {
+  text-align: center;
+}
+
+.motion-graphics__title {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  font-size: clamp(72px, 8.4vw, 148px);
+}
+
+.motion-graphics__title-black {
+  display: block;
+  color: #000;
+}
+
+.motion-graphics__title-orange {
+  display: block;
+  color: #ff6a00;
+}
+
+.motion-graphics__copy {
+  margin: 34px 0 0;
+  color: #121212;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(18px, 1.3vw, 24px);
+  line-height: 1.2;
+  font-weight: 500;
+}
+
+.motion-graphics__carousel-wrap {
+  width: 100%;
+  margin-top: 56px;
+  /* perspective sobre el contenedor para el efecto 3D */
+  perspective: 1200px;
+  perspective-origin: 50% 50%;
+}
+
+.motion-graphics__swiper {
+  width: 100%;
+  overflow: visible !important; /* slides rotadas deben verse fuera del clip */
+}
+
+.motion-graphics__swiper .swiper-wrapper {
+  transform-style: preserve-3d;
+}
+
+.motion-graphics__slide {
+  width: 554px !important; /* tamaño fijo como la versión anterior en desktop */
+}
+
+.motion-graphics__card {
+  width: 100%;
+  height: 364px;
+  border-radius: 58px;
+  background: #c8c8ca;
+  display: block;
+  will-change: transform, opacity;
+}
+
+@media (max-width: 768px) {
+  .motion-graphics {
+    padding: 24px 0 34px;
+  }
+
+  .motion-graphics__title {
+    font-size: clamp(48px, 18vw, 90px);
+  }
+
+  .motion-graphics__copy {
+    margin-top: 16px;
+    font-size: 14px;
+  }
+
+  .motion-graphics__carousel-wrap {
+    margin-top: 28px;
+  }
+
+  .motion-graphics__slide {
+    width: 260px !important;
+  }
+
+  .motion-graphics__card {
+    height: 168px;
+    border-radius: 22px;
+  }
+}

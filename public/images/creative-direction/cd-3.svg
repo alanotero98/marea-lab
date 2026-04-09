@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <rect width="800" height="600" fill="#0a0a0a"/>
+  <defs>
+    <linearGradient id="g3" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ff6a00" stop-opacity="0.4"/>
+      <stop offset="60%" stop-color="#ff6a00" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#g3)"/>
+  <!-- diagonal lines -->
+  <line x1="0" y1="0" x2="800" y2="600" stroke="#ffffff" stroke-width="0.4" opacity="0.05"/>
+  <line x1="200" y1="0" x2="800" y2="480" stroke="#ffffff" stroke-width="0.4" opacity="0.05"/>
+  <line x1="0" y1="120" x2="680" y2="600" stroke="#ffffff" stroke-width="0.4" opacity="0.05"/>
+  <!-- accent shape -->
+  <rect x="0" y="480" width="800" height="120" fill="#ff6a00" opacity="0.06"/>
+  <rect x="0" y="478" width="800" height="2" fill="#ff6a00" opacity="0.4"/>
+  <!-- big number -->
+  <text x="420" y="420" font-family="Arial" font-size="320" font-weight="900" fill="#ffffff" opacity="0.03" letter-spacing="-10">03</text>
+  <!-- main text -->
+  <text x="60" y="200" font-family="Arial" font-size="13" fill="#ff6a00" opacity="0.8" letter-spacing="6">LIVE EXPERIENCE</text>
+  <rect x="60" y="215" width="200" height="1.5" fill="#ff6a00" opacity="0.5"/>
+  <text x="60" y="310" font-family="Arial" font-size="70" font-weight="900" fill="#ffffff" opacity="0.9" letter-spacing="-2">MOTION</text>
+  <text x="60" y="390" font-family="Arial" font-size="70" font-weight="900" fill="#ffffff" opacity="0.9" letter-spacing="-2">&amp; SPACE</text>
+  <text x="60" y="540" font-family="Arial" font-size="13" fill="#ffffff" opacity="0.25" letter-spacing="5">CREATIVE DIRECTION — 03</text>
+</svg>
