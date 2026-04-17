@@ -6,7 +6,7 @@ import HeroSection from './sections/HeroSection'
 import logo from './assets/logo-marea.png'
 import MotionGraphicsSection from './sections/MotionGraphicsSection'
 import PremiumCarouselSection from './sections/PremiumCarouselSection'
-import IAVideoProduction from './sections/IAVideoPrOduction.jsx'
+import IAVideoProduction from './sections/IAVideoProduction.jsx'
 import CreativeDirectionSection from './sections/Creativedirectionsection.jsx'
 import ContactSection from './sections/ContactSection.jsx'
 
