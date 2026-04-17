@@ -68,30 +68,47 @@
   will-change: transform, opacity;
 }
 
+/* ─── Mobile ─────────────────────────────────────────────────────────────── */
+/*
+ * PATTERN NOTES (reuse for IA Video Production, etc.)
+ *  - Title: two-line black/orange stack, capped at ~13vw so it reads
+ *    as a label rather than a hero on small screens.
+ *  - Carousel: slide width = 72vw → leaves ~14vw visible on each side,
+ *    giving the "peek" effect that mirrors the desktop panorama.
+ *  - spaceBetween on mobile is handled via Swiper breakpoints (14px).
+ */
 @media (max-width: 768px) {
   .motion-graphics {
-    padding: 24px 0 34px;
+    padding: 36px 0 48px;
   }
 
+  /* Smaller title — prominent but not dominant */
   .motion-graphics__title {
-    font-size: clamp(48px, 18vw, 90px);
+    font-size: clamp(40px, 12vw, 60px);
   }
 
   .motion-graphics__copy {
-    margin-top: 16px;
-    font-size: 14px;
+    margin-top: 12px;
+    font-size: 13px;
+    line-height: 1.4;
   }
 
   .motion-graphics__carousel-wrap {
     margin-top: 28px;
   }
 
+  /*
+   * PATRÓN CAROUSEL MOBILE (reutilizable):
+   *  62vw → ~19vw libre a cada lado (≈74px en 390px)
+   *  Combinado con rotateY reducido (15°) en applyPanorama,
+   *  las cards adyacentes se ven como cards reales, no como slivers.
+   */
   .motion-graphics__slide {
-    width: 260px !important;
+    width: 62vw !important;
   }
 
   .motion-graphics__card {
-    height: 168px;
-    border-radius: 22px;
+    height: 180px;
+    border-radius: 20px;
   }
 }

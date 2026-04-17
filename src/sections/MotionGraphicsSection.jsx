@@ -11,15 +11,19 @@ const motionCards = [
   { id: 'motion-5' },
 ]
 
-// Aplica el efecto panorámico: cada slide rota en Y según su distancia al centro
+// Aplica el efecto panorámico: cada slide rota en Y según su distancia al centro.
+// En mobile usamos menos rotación (15°) para que las cards de los costados
+// se vean como cards reales y no como finas líneas.
+// PATRÓN REUTILIZABLE: pasar esta función a cualquier sección con Swiper panorámico.
 function applyPanorama(swiper) {
-  const deg = 38 // grados de rotación máxima por slide
+  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768
+  const deg = isMobile ? 15 : 38
   swiper.slides.forEach((slide) => {
     const progress = slide.progress
-    const rotateY   = deg * progress
-    const opacity   = 1 - Math.abs(progress) * 0.25
+    const rotateY  = deg * progress
+    const opacity  = 1 - Math.abs(progress) * (isMobile ? 0.15 : 0.25)
     slide.style.transform = `rotateY(${rotateY}deg)`
-    slide.style.opacity   = Math.max(opacity, 0.2)
+    slide.style.opacity   = Math.max(opacity, 0.4)
   })
 }
 
@@ -47,6 +51,10 @@ export default function MotionGraphicsSection() {
           slidesPerView="auto"
           centeredSlides
           spaceBetween={74}
+          breakpoints={{
+            0:   { spaceBetween: 14 },
+            769: { spaceBetween: 74 },
+          }}
           loop
           speed={900}
           autoplay={{ delay: 2600, disableOnInteraction: false }}

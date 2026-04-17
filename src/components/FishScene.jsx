@@ -26,8 +26,9 @@ function FishModel({ onLoaded, timelineRef }) {
   const modelDirectionRef = useRef(null)
   const { scene }         = useGLTF('/models/blender-AnglerFish.glb')
 
-  const baseRef    = useRef({ posY: KF[0].posY, posZ: KF[0].posZ, scaleXYZ: KF[0].scaleXYZ, swimAmp: KF[0].swimAmp, swimFreq: KF[0].swimFreq })
-  const finBoneRef = useRef(null)
+  const baseRef     = useRef({ posY: KF[0].posY, posZ: KF[0].posZ, scaleXYZ: KF[0].scaleXYZ, swimAmp: KF[0].swimAmp, swimFreq: KF[0].swimFreq })
+  const finBoneRef  = useRef(null)
+  const swimPhaseRef = useRef(0)  // fase acumulada con delta — evita saltos al cambiar swimFreq
 
   useEffect(() => { onLoaded?.() }, [])
 
@@ -52,12 +53,46 @@ function FishModel({ onLoaded, timelineRef }) {
     // Timeline sin callbacks — el padre los asigna dinámicamente con eventCallback()
     const tl = gsap.timeline({ paused: true })
 
-    tl.to(base, { posZ: KF[1].posZ, scaleXYZ: KF[1].scaleXYZ, posY: KF[1].posY, swimAmp: KF[1].swimAmp, swimFreq: KF[1].swimFreq, duration: 2.4, ease: 'power1.inOut' })
-      .to(base, { posZ: KF[2].posZ, scaleXYZ: KF[2].scaleXYZ, posY: KF[2].posY, swimAmp: KF[2].swimAmp, swimFreq: KF[2].swimFreq, duration: 2.6, ease: 'power1.inOut' })
-      .to(base, { posZ: KF[3].posZ, scaleXYZ: KF[3].scaleXYZ, posY: KF[3].posY, swimAmp: KF[3].swimAmp, swimFreq: KF[3].swimFreq, duration: 2.0, ease: 'power2.in'   })
+    tl.to(base, { posZ: KF[1].posZ, scaleXYZ: KF[1].scaleXYZ, posY: KF[1].posY, swimAmp: KF[1].swimAmp, swimFreq: KF[1].swimFreq, duration: 1.8, ease: 'power1.inOut' })
+      .to(base, { posZ: KF[2].posZ, scaleXYZ: KF[2].scaleXYZ, posY: KF[2].posY, swimAmp: KF[2].swimAmp, swimFreq: KF[2].swimFreq, duration: 2.0, ease: 'power1.inOut' })
+      .to(base, { posZ: KF[3].posZ, scaleXYZ: KF[3].scaleXYZ, posY: KF[3].posY, swimAmp: KF[3].swimAmp, swimFreq: KF[3].swimFreq, duration: 1.7, ease: 'power2.in'   })
 
     if (fade) {
       tl.to(fade, { opacity: 1, duration: 0.4, ease: 'power2.in' }, '>-0.20')
+    }
+
+    // Reset completo para cada nuevo ciclo.
+    // HeroSection llama tl._reset() antes de cada play() y al completar el reverse.
+    // invalidate() obliga a GSAP a re-capturar los valores "from" en el siguiente play,
+    // evitando el bug de estado cacheado que causa auto-replay y comportamiento roto en ciclo 2+.
+    tl._reset = () => {
+      tl.timeScale(1)
+
+      // Valores base → KF[0]
+      base.posZ     = KF[0].posZ
+      base.scaleXYZ = KF[0].scaleXYZ
+      base.posY     = KF[0].posY
+      base.swimAmp  = KF[0].swimAmp
+      base.swimFreq = KF[0].swimFreq
+
+      // Fase de natación → reiniciar oscilación sin saltos
+      swimPhaseRef.current = 0
+
+      // Posición 3D del pez → KF[0]
+      const fishMesh = fishGroupRef.current
+      if (fishMesh) {
+        fishMesh.position.set(0, KF[0].posY, KF[0].posZ)
+        fishMesh.rotation.set(0, MOUTH_ROT_Y, 0)
+        fishMesh.scale.setScalar(KF[0].scaleXYZ)
+      }
+
+      // Limpiar estado interno de GSAP — fuerza re-captura de "from" en next play()
+      tl.invalidate()
+      tl.pause(0, true)
+
+      // Fade overlay → oculto
+      const fadeEl = document.querySelector('.hero__mouth-fade')
+      if (fadeEl) gsap.set(fadeEl, { opacity: 0 })
     }
 
     if (timelineRef) timelineRef.current = tl
@@ -65,19 +100,25 @@ function FishModel({ onLoaded, timelineRef }) {
     return () => { tl.kill() }
   }, [])
 
-  useFrame(({ clock }) => {
+  useFrame(({ clock }, delta) => {
     const fish = fishGroupRef.current
     if (!fish) return
 
-    const t    = clock.getElapsedTime()
     const base = baseRef.current
     const f    = base.swimFreq
 
-    fish.position.x = Math.sin(t * f) * base.swimAmp
+    // Acumular fase con delta — sin saltos al cambiar swimFreq entre ciclos
+    swimPhaseRef.current += delta * f
+    const p = swimPhaseRef.current
+
+    // t independiente para movimientos lentos (bobbing, rotation.x) — no depende de swimFreq
+    const t = clock.getElapsedTime()
+
+    fish.position.x = Math.sin(p) * base.swimAmp
     fish.position.y = base.posY + Math.sin(t * 0.7) * 0.04
     fish.position.z = base.posZ
-    fish.rotation.y = MOUTH_ROT_Y + Math.sin(t * f - 0.3) * (base.swimAmp * 0.15)
-    fish.rotation.z = Math.sin(t * f + 0.4) * (base.swimAmp * 0.18)
+    fish.rotation.y = MOUTH_ROT_Y + Math.sin(p - 0.3) * (base.swimAmp * 0.15)
+    fish.rotation.z = Math.sin(p + 0.4) * (base.swimAmp * 0.18)
     fish.rotation.x = Math.sin(t * 0.9) * 0.012
     fish.scale.setScalar(base.scaleXYZ)
 

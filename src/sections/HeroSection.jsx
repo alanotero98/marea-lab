@@ -13,6 +13,8 @@ export default function HeroSection() {
   const fishTlRef          = useRef(null)
   const phaseRef           = useRef('heroIdle')
   const delayCallRef       = useRef(null)
+  const earlyTriggerRef    = useRef(null)  // dispara handleFishComplete 1s antes del fin
+  const pendingNavTarget   = useRef(null)  // selector CSS a scrollear tras la animación
   // Timestamp (ms) hasta el cual triggerForward está bloqueado.
   // performance.now() + 700ms después del reverse → inmune al momentum de trackpad.
   // Un boolean es insuficiente: el momentum genera muchos eventos; el primero
@@ -44,15 +46,17 @@ export default function HeroSection() {
 
     setPhase('heroPlaying')
 
-    tl.eventCallback('onComplete',        handleFishComplete)
+    tl.eventCallback('onComplete',        null)
     tl.eventCallback('onReverseComplete', null)
-    tl.timeScale(1)
 
-    const fade = document.querySelector('.hero__mouth-fade')
-    if (fade) gsap.set(fade, { opacity: 0 })
-
-    tl.seek(0, true)
+    // Reset completo antes de cada play — limpia GSAP interno, base, posición 3D, fade.
+    tl._reset?.()
     tl.play()
+
+    earlyTriggerRef.current?.kill()
+    earlyTriggerRef.current = gsap.delayedCall(tl.duration() - 1, () => {
+      if (phaseRef.current === 'heroPlaying') handleFishComplete()
+    })
   }
 
   function handleFishComplete() {
@@ -78,6 +82,14 @@ export default function HeroSection() {
         window.scrollTo({ top: hero.offsetHeight, behavior: 'instant' })
         gsap.set(branding, { clearProps: 'position,top,left,right,zIndex' })
         setPhase('brandingActive')
+
+        if (pendingNavTarget.current) {
+          const sel = pendingNavTarget.current
+          pendingNavTarget.current = null
+          setTimeout(() => {
+            document.querySelector(sel)?.scrollIntoView({ behavior: 'smooth' })
+          }, 60)
+        }
       },
     })
   }
@@ -105,6 +117,11 @@ export default function HeroSection() {
     window.scrollTo({ top: 0, behavior: 'instant' })
     gsap.to(branding, { top: '100vh', duration: 1.0, ease: 'power3.inOut' })
 
+    // Cancelar el early trigger — si el usuario vuelve antes de que expire
+    // no debe dispararse handleFishComplete a destiempo.
+    earlyTriggerRef.current?.kill()
+    earlyTriggerRef.current = null
+
     tl.eventCallback('onReverseComplete', handleFishReverseComplete)
     tl.eventCallback('onComplete',        null)
 
@@ -125,6 +142,8 @@ export default function HeroSection() {
 
     delayCallRef.current?.kill()
     delayCallRef.current = null
+    earlyTriggerRef.current?.kill()
+    earlyTriggerRef.current = null
 
     const branding = document.querySelector('.branding-section')
     const navbar   = document.querySelector('.main-nav')
@@ -132,8 +151,7 @@ export default function HeroSection() {
 
     if (tl) {
       tl.eventCallback('onReverseComplete', null)
-      tl.timeScale(1)
-      tl.seek(0, true)
+      tl._reset?.()
     }
 
     gsap.killTweensOf(navbar)
@@ -195,19 +213,36 @@ export default function HeroSection() {
 
     const preventTouch = (e) => { if (isLocked()) e.preventDefault() }
 
-    window.addEventListener('wheel',      onWheel,      { passive: true  })
-    window.addEventListener('keydown',    onKey)
-    window.addEventListener('touchstart', onTouchStart, { passive: true  })
-    window.addEventListener('touchend',   onTouchEnd,   { passive: true  })
-    window.addEventListener('touchmove',  preventTouch, { passive: false })
+    const onNavScroll = (e) => {
+      const { selector } = e.detail
+      if (phaseRef.current === 'heroIdle') {
+        pendingNavTarget.current = selector
+        forwardLockedUntil.current = 0  // click de nav siempre es deliberado
+        triggerForward()
+      } else if (phaseRef.current === 'brandingActive') {
+        document.querySelector(selector)?.scrollIntoView({ behavior: 'smooth' })
+      } else {
+        // en transición: encolar para ejecutar cuando lleguemos a brandingActive
+        pendingNavTarget.current = selector
+      }
+    }
+
+    window.addEventListener('wheel',         onWheel,      { passive: true  })
+    window.addEventListener('keydown',        onKey)
+    window.addEventListener('touchstart',     onTouchStart, { passive: true  })
+    window.addEventListener('touchend',       onTouchEnd,   { passive: true  })
+    window.addEventListener('touchmove',      preventTouch, { passive: false })
+    window.addEventListener('marea:navScroll', onNavScroll)
 
     return () => {
-      window.removeEventListener('wheel',      onWheel)
-      window.removeEventListener('keydown',    onKey)
-      window.removeEventListener('touchstart', onTouchStart)
-      window.removeEventListener('touchend',   onTouchEnd)
-      window.removeEventListener('touchmove',  preventTouch)
+      window.removeEventListener('wheel',         onWheel)
+      window.removeEventListener('keydown',        onKey)
+      window.removeEventListener('touchstart',     onTouchStart)
+      window.removeEventListener('touchend',       onTouchEnd)
+      window.removeEventListener('touchmove',      preventTouch)
+      window.removeEventListener('marea:navScroll', onNavScroll)
       delayCallRef.current?.kill()
+      earlyTriggerRef.current?.kill()
       document.body.style.overflow = ''
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps

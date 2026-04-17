@@ -109,7 +109,7 @@
   align-items: center;
 }
 
-/* ── CAROUSEL WRAPPER ── */
+/* ── CAROUSEL WRAPPER ── */ck
 .cd-carousel-wrapper {
   width: 100%;
   display: flex;
@@ -171,6 +171,7 @@
     width: calc(100% - 32px);
     grid-template-columns: 1fr;
     gap: 32px;
+    
   }
 
   .cd-carousel-wrapper .stack-carousel__container {
@@ -184,6 +185,7 @@
 
   .cd-copy {
     font-size: 13px;
+    margin-top:70px;
   }
 
   .cd-carousel-wrapper .stack-carousel__indicators {
@@ -197,13 +199,15 @@
   }
 
   .cd-title {
-    font-size: clamp(40px, 16vw, 72px);
-    margin-bottom: 24px;
+    font-size: clamp(40px, 14vw, 62px);
+    margin-bottom: 34px;
   }
 
   .cd-body {
     width: calc(100% - 16px);
     gap: 24px;
+    padding-left: 15px;
+    padding-right:15px;
   }
 
   .cd-carousel-wrapper .stack-carousel__container {

@@ -208,6 +208,11 @@ a.contact-info__value:hover {
   gap: 20px;
 }
 
+.contact-form__submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .contact-form__submit.is-sent {
   background: #1a1a1a;
   color: #ff6a00;
@@ -217,6 +222,17 @@ a.contact-info__value:hover {
 
 .contact-form__submit.is-sent:hover {
   background: #1a1a1a;
+  gap: 12px;
+}
+
+.contact-form__submit.is-error {
+  background: #1a1a1a;
+  color: #ff3333;
+  gap: 12px;
+}
+
+.contact-form__submit.is-error:hover {
+  background: #2a0000;
   gap: 12px;
 }
 
@@ -254,7 +270,7 @@ a.contact-info__value:hover {
 /* ── RESPONSIVE ── */
 @media (max-width: 768px) {
   .contact-section {
-    padding: 56px 0 0;
+    padding: 56px 10px 0;
   }
 
   .contact-inner {
@@ -276,7 +292,7 @@ a.contact-info__value:hover {
   .contact-body {
     grid-template-columns: 1fr;
     gap: 40px;
-    padding-top: 40px;
+    padding-top: 30px;
   }
 
   .contact-info {

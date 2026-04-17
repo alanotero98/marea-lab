@@ -1,4 +1,6 @@
+import { useState } from 'react'
 import './App.css'
+import Preloader from './components/Preloader'
 import BrandingSection from './sections/BrandingSection'
 import HeroSection from './sections/HeroSection'
 import logo from './assets/logo-marea.png'
@@ -8,13 +10,17 @@ import IAVideoProduction from './sections/IAVideoPrOduction.jsx'
 import CreativeDirectionSection from './sections/Creativedirectionsection.jsx'
 import ContactSection from './sections/ContactSection.jsx'
 
+function navTo(selector) {
+  window.dispatchEvent(new CustomEvent('marea:navScroll', { detail: { selector } }))
+}
+
 function MainNav() {
   return (
-    <header className="main-nav" >
+    <header className="main-nav">
       <nav className="main-nav__inner">
         <div className="main-nav__side main-nav__side--left">
-          <a href="#work" id="work">OUR WORK</a>
-          <a href="#projects">PROJECTS</a>
+          <a href="#our-work" onClick={(e) => { e.preventDefault(); navTo('#our-work') }}>OUR WORK</a>
+          <a href="#projects"  onClick={(e) => { e.preventDefault(); navTo('#projects') }}>PROJECTS</a>
         </div>
 
         <a href="/" className="main-nav__logo" aria-label="Marea home">
@@ -22,8 +28,8 @@ function MainNav() {
         </a>
 
         <div className="main-nav__side main-nav__side--right">
-          <a href="#services">SERVICES</a>
-          <a href="#contact">CONTACT</a>
+          <a href="#services" onClick={(e) => { e.preventDefault(); navTo('#services') }}>SERVICES</a>
+          <a href="#contact"  onClick={(e) => { e.preventDefault(); navTo('#contact') }}>CONTACT</a>
         </div>
       </nav>
     </header>
@@ -47,15 +53,20 @@ function WhatsAppButton() {
 }
 
 function App() {
+  const [isLoading, setIsLoading] = useState(true)
+
   return (
      <main className="app">
+      {isLoading && (
+        <Preloader onComplete={() => setIsLoading(false)} />
+      )}
       <MainNav />
       <HeroSection />
       <BrandingSection />
-      <PremiumCarouselSection />
-      <MotionGraphicsSection />
+      <div id="our-work"><PremiumCarouselSection /></div>
+      <div id="projects"><MotionGraphicsSection /></div>
       <IAVideoProduction />
-      <CreativeDirectionSection />
+      <div id="services"><CreativeDirectionSection /></div>
       <ContactSection />
       <WhatsAppButton />
     </main>

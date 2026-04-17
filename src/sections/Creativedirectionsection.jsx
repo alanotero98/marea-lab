@@ -5,34 +5,30 @@ import './CreativeDirectionSection.css'
 const creativeCards = [
   {
     id: 'cd-1',
-    image: '/images/creative-direction/cd-1.svg',
+    image: '/images/creative-direction/creative-direction/1.jpg',
     alt: 'Creative Direction 1',
   },
   {
     id: 'cd-2',
-    image: '/images/creative-direction/cd-2.svg',
+    image: '/images/creative-direction/creative-direction/2.jpg',
     alt: 'Creative Direction 2',
   },
   {
     id: 'cd-3',
-    image: '/images/creative-direction/cd-3.svg',
+    image: '/images/creative-direction/creative-direction/3.jpg',
     alt: 'Creative Direction 3',
   },
   {
     id: 'cd-4',
-    image: '/images/creative-direction/cd-4.svg',
+    image: '/images/creative-direction/creative-direction/4.jpg',
     alt: 'Creative Direction 4',
   },
   {
     id: 'cd-5',
-    image: '/images/creative-direction/cd-5.svg',
+    image: '/images/creative-direction/creative-direction/5.jpg',
     alt: 'Creative Direction 5',
   },
-  {
-    id: 'cd-6',
-    image: '/images/creative-direction/cd-6.svg',
-    alt: 'Creative Direction 6',
-  },
+ 
 ]
 
 export default function CreativeDirectionSection() {

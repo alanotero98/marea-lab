@@ -1,0 +1,21 @@
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  will-change: transform, opacity;
+  pointer-events: all;
+}
+
+.preloader__logo {
+  width: clamp(120px, 20vw, 220px);
+  height: auto;
+  display: block;
+  will-change: filter;
+  filter: brightness(0.27);
+  user-select: none;
+  pointer-events: none;
+}

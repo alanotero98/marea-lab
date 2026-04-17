@@ -209,52 +209,67 @@
   }
 }
 
-/* mobile */
+/* ─── Mobile ─────────────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
   .ia-production {
-    padding: 38px 0 52px;
+    padding: 36px 0 48px;
   }
 
+  /* Container full-width: el texto tiene su propio padding lateral */
   .ia-production__container {
-    width: calc(100% - 32px);
+    width: 100%;
   }
 
+  /* Título + copy en columna centrada */
   .ia-production__top {
-    grid-template-columns: 1.05fr 0.95fr;
-    align-items: end;
-    column-gap: 8px;
-    margin-bottom: 18px;
-    transform: none;         /* elimina el translateX(-20px) del desktop */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    column-gap: 0;
+    margin-bottom: 28px;
+    padding: 0 20px;
+    transform: none;
   }
 
-  .ia-production__line--black {
-    font-size: 72px;
+  .ia-production__title {
+    align-items: center;
   }
 
-  .ia-production__line--orange {
-    font-size: 62px;
-  }
-
+  /* Mismo clamp Y mismo font-weight (900) que MotionGraphics mobile */
+  .ia-production__line--black,
+  .ia-production__line--orange,
   .ia-production__line--small {
-    font-size: 32px;
+    font-size: clamp(40px, 12vw, 60px);
+    font-weight: 900;
   }
 
+  /* Copy debajo del título */
   .ia-production__copy {
-    max-width: 170px;
-    padding-bottom: 6px;
+    max-width: 280px;
+    margin-top: 14px;
+    padding-bottom: 0;
   }
 
   .ia-production__copy p {
-    font-size: 10px;
-    line-height: 1.12;
+    font-size: 13px;
+    line-height: 1.4;
+    text-align: center;
   }
 
-  .ia-production__slide-card {
-    min-height: 220px;
-    border-radius: 22px;
+  /* Slider centrado */
+  .ia-production__slider-wrap {
+    width: calc(100% - 32px);
+    margin: 0 auto;
   }
 
   .ia-production__slider {
-    margin-left: 0;          /* elimina el margin-left: 10% del desktop */
+    width: 100%;
+    margin-left: 35;
+  }
+
+  .ia-production__slide-card {
+    min-height: 180px;
+    border-radius: 20px;
   }
 }
